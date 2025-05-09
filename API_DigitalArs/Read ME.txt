@@ -1,0 +1,5 @@
+Paso 1: Configuración de paquetes
+Paso 2: Creación carpeta Models, creación de archivos .cs (tablas de la BD)
+
+
+PASOS SUJETOS A REVISIÓN.

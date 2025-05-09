@@ -1,0 +1,112 @@
+CREATE TABLE rol(
+  rol_id INT NOT NULL IDENTITY (1,1) PRIMARY KEY, --ID autoincremental
+  nombre_rol VARCHAR (20) NOT NULL --administrador, cliente
+  );
+  
+CREATE TABLE usuario(
+  usuario_id INT NOT NULL IDENTITY (1,1) PRIMARY KEY, --ID autoincremental
+  nombre VARCHAR (50) NOT NULL,
+  apellido VARCHAR (50) NOT NULL,
+  dni VARCHAR (10) NOT NULL,
+  email VARCHAR (100) NOT NULL,
+  contrasenia VARCHAR (100) NOT NULL,
+  rol_id INT NOT NULL FOREIGN KEY REFERENCES rol(rol_id)
+  );
+    
+CREATE TABLE cuenta(
+  cuenta_id  INT NOT NULL IDENTITY (1,1) PRIMARY KEY, --ID autoincremental
+  usuario_id INT NOT NULL FOREIGN KEY REFERENCES usuario(usuario_id),
+  moneda VARCHAR (3) NOT NULL, -- ARS
+  saldo DECIMAL (10, 2) NOT NULL,
+  fecha_creacion DATETIME NOT NULL
+  );
+  
+CREATE TABLE transaccion(
+  transaccion_id INT NOT NULL IDENTITY (1,1) PRIMARY KEY, --ID autoincremental
+  monto DECIMAL (10, 2) NOT NULL,
+  fecha DATETIME NOT NULL,
+  descripcion VARCHAR (100) NOT NULL,
+  estado VARCHAR (15) NOT NULL, --pendiente, aprobado, cancelado
+  tipo_transaccion VARCHAR (20) NOT NULL,
+  cuenta_origen_id INT NULL FOREIGN KEY REFERENCES cuenta(cuenta_id),
+  cuenta_destino_id INT NULL FOREIGN KEY REFERENCES cuenta(cuenta_id)
+  );
+  
+INSERT INTO rol VALUES
+  ('administrador'),
+  ('cliente');
+  
+INSERT INTO usuario VALUES
+  ('Juan', 'López', '12345678', 'juanlopez@email.com', '1234', 2),
+  ('María', 'Sánchez', '12345679', 'marisanchez@email.com', '4567', 2),
+  ('Carlos', 'García', '12345610', 'carlosgarcia@email.com', '7894', 1);
+  
+INSERT INTO cuenta VALUES
+  (1, 'ARS', 100000.00, GETDATE()),
+  (2, 'ARS', 250000.00, GETDATE());
+  
+INSERT INTO transaccion VALUES
+  (25000.00, GETDATE(), 'pago de servicios', 'aprobado', 'transferencia', 1, 2),
+  (13000.00, GETDATE(), 'compra alfajores', 'pendiente', 'transferencia', 2, 1);
+  
+  
+--CONSULTAS:
+  
+SELECT * FROM rol;
+  
+SELECT * FROM usuario;
+  
+SELECT * FROM cuenta;
+  
+SELECT * FROM transaccion;
+  
+--Seleccionar a las personas que son clientes:
+  
+  SELECT nombre + ' ' + apellido AS nombre_completo, nombre_rol AS rol
+  from usuario
+  INNER JOIN rol
+  ON usuario.rol_id = rol.rol_id
+  WHERE nombre_rol = 'cliente';
+  
+  
+--Seleccionar a las personas que hicieron transferencias:
+  
+  SELECT nombre + ' ' + apellido AS nombre_completo, tipo_transaccion
+  FROM usuario
+  INNER JOIN cuenta
+  ON usuario.usuario_id = cuenta.usuario_id
+  INNER JOIN transaccion
+  ON cuenta.cuenta_id = transaccion.cuenta_origen_id
+  WHERE tipo_transaccion = 'transferencia';
+  
+  
+--Calcular monto actual de Juan López:
+  
+  SELECT CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo, c.saldo AS saldo_inicial,
+  ISNULL(SUM(t.monto), 0) AS monto_total_transferido,
+  c.saldo - ISNULL(SUM(t.monto), 0) AS saldo_final_estimado
+  FROM usuario u
+  INNER JOIN cuenta c ON u.usuario_id = c.usuario_id
+  LEFT JOIN transaccion t ON c.cuenta_id = t.cuenta_origen_id
+  WHERE u.nombre = 'Juan' AND u.apellido = 'López'
+  GROUP BY u.nombre, u.apellido, c.saldo;
+
+  
+--Inserta nuevo usuario de tipo administrador:
+
+INSERT INTO usuario VALUES
+  ('Alejandra', 'Martínez', '12345500', 'alemartinez@email.com', '9512', 1);
+
+
+--Cambia la contraseña del usuario 4:
+
+UPDATE usuario
+SET contrasenia = '5555' 
+WHERE usuario_id = 4;
+  
+  
+--Elimina al usuario 3:
+
+DELETE 
+FROM usuario
+WHERE usuario_id = 3;
