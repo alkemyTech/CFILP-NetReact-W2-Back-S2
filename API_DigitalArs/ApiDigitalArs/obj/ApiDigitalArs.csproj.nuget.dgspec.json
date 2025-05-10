@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {}
+    "C:\\Users\\Jorge\\Desktop\\Alkemy Bootcamp\\Job Readiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {}
   },
   "projects": {
-    "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {
+    "C:\\Users\\Jorge\\Desktop\\Alkemy Bootcamp\\Job Readiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+        "projectUniqueName": "C:\\Users\\Jorge\\Desktop\\Alkemy Bootcamp\\Job Readiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
         "projectName": "ApiDigitalArs",
-        "projectPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
-        "packagesPath": "C:\\Users\\hebeh\\.nuget\\packages\\",
-        "outputPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\obj\\",
+        "projectPath": "C:\\Users\\Jorge\\Desktop\\Alkemy Bootcamp\\Job Readiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+        "packagesPath": "C:\\Users\\Jorge\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jorge\\Desktop\\Alkemy Bootcamp\\Job Readiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\hebeh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Jorge\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
