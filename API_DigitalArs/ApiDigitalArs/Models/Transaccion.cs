@@ -1,11 +1,17 @@
 public class Transaccion
 {
-    public int transaccion_id { get; set; }
-    public decimal monto { get; set; }
-    public DateTime fecha { get; set; }
-    public string descripcion { get; set; } = null!;
-    public string estado { get; set; } = null!; 
-    public string tipo_transaccion { get; set; } = null!;
-    public int? cuenta_origen_id { get; set; }
-    public int? cuenta_destino_id { get; set; }
+    public int TransaccionId { get; set; }
+    public decimal Monto { get; set; }
+    public DateTime Fecha { get; set; }
+    public string Descripcion { get; set; } = null!;
+    public string Estado { get; set; } = null!; 
+    public string TipoTransaccion { get; set; } = null!;
+    
+    // FK a cuenta origen (nullable)
+    public int? CuentaOrigenId { get; set; }
+    public Cuenta? CuentaOrigen { get; set; }
+
+    // FK a cuenta destino (nullable)
+    public int? CuentaDestinoId { get; set; }
+    public Cuenta? CuentaDestino { get; set; }
 }

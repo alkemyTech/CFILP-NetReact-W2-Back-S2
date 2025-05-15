@@ -35,14 +35,14 @@ public class TransaccionesController : ControllerBase
     {
         _context.Transacciones.Add(transaccion);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetTransaccion), new { id = transaccion.transaccion_id }, transaccion);
+        return CreatedAtAction(nameof(GetTransaccion), new { id = transaccion.TransaccionId }, transaccion);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PutTransaccion(int id, Transaccion transaccion)
     {
-        if (id != transaccion.transaccion_id) return BadRequest();
+        if (id != transaccion.TransaccionId) return BadRequest();
         _context.Entry(transaccion).State = EntityState.Modified;
         try
         {
@@ -50,7 +50,7 @@ public class TransaccionesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!_context.Transacciones.Any(t => t.transaccion_id == id)) return NotFound();
+            if (!_context.Transacciones.Any(t => t.TransaccionId == id)) return NotFound();
             else throw;
         }
         return NoContent();

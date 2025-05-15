@@ -35,14 +35,14 @@ public class RolesController : ControllerBase
     {
         _context.Roles.Add(rol);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetRol), new { id = rol.rol_id }, rol);
+        return CreatedAtAction(nameof(GetRol), new { id = rol.RolId }, rol);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PutRol(int id, Rol rol)
     {
-        if (id != rol.rol_id) return BadRequest();
+        if (id != rol.RolId) return BadRequest();
         _context.Entry(rol).State = EntityState.Modified;
         try
         {
@@ -50,7 +50,7 @@ public class RolesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!_context.Roles.Any(r => r.rol_id == id)) return NotFound();
+            if (!_context.Roles.Any(r => r.RolId == id)) return NotFound();
             else throw;
         }
         return NoContent();

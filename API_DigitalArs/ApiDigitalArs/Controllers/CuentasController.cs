@@ -34,14 +34,14 @@ public class CuentasController : ControllerBase
     {
         _context.Cuentas.Add(cuenta);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetCuenta), new { id = cuenta.cuenta_id }, cuenta);
+        return CreatedAtAction(nameof(GetCuenta), new { id = cuenta.CuentaId }, cuenta);
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PutCuenta(int id, Cuenta cuenta)
     {
-        if (id != cuenta.cuenta_id) return BadRequest();
+        if (id != cuenta.CuentaId) return BadRequest();
         _context.Entry(cuenta).State = EntityState.Modified;
         try
         {
@@ -49,7 +49,7 @@ public class CuentasController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!_context.Cuentas.Any(e => e.cuenta_id == id)) return NotFound();
+            if (!_context.Cuentas.Any(e => e.CuentaId == id)) return NotFound();
             else throw;
         }
         return NoContent();

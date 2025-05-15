@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {}
+    "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {}
   },
   "projects": {
-    "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {
+    "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+        "projectUniqueName": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
         "projectName": "ApiDigitalArs",
-        "projectPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
-        "packagesPath": "C:\\Users\\hebeh\\.nuget\\packages\\",
-        "outputPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\obj\\",
+        "projectPath": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\hebeh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -47,6 +53,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[6.*, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
