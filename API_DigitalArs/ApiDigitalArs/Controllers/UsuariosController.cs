@@ -16,53 +16,116 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+    public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuarios()
     {
-        return await _context.Usuarios.ToListAsync();
-    }
+        var usuarios = await _context.Usuarios
+            .Include(u => u.Rol)
+            .Select(u => new UsuarioDto
+            {
+                UsuarioId = u.UsuarioId,
+                Nombre = u.Nombre,
+                Apellido = u.Apellido,
+                Dni = u.Dni,
+                Email = u.Email,
+                RolId = u.RolId,
+                RolNombre = u.Rol.RolNombre
+            })
+            .ToListAsync();
+
+        return Ok(usuarios);    }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Usuario>> GetUsuario(int id)
+    public async Task<ActionResult<UsuarioDto>> GetUsuario(int id)
     {
-        var usuario = await _context.Usuarios.FindAsync(id);
-        if (usuario == null) return NotFound();
-        return usuario;
+         var usuario = await _context.Usuarios
+            .Include(u => u.Rol)
+            .Where(u => u.UsuarioId == id)
+            .Select(u => new UsuarioDto
+            {
+                UsuarioId = u.UsuarioId,
+                Nombre = u.Nombre,
+                Apellido = u.Apellido,
+                Dni = u.Dni,
+                Email = u.Email,
+                RolId = u.RolId,
+                RolNombre = u.Rol.RolNombre
+            })
+            .FirstOrDefaultAsync();
+
+        if (usuario == null)
+            return NotFound();
+
+        return Ok(usuario);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+    public async Task<ActionResult<UsuarioDto>> CreateUsuario(CreateUsuarioDto dto)
     {
+        // Validar que el Rol exista
+        var rolExiste = await _context.Roles.AnyAsync(r => r.RolId == dto.RolId);
+        if (!rolExiste)
+            return BadRequest("El rol especificado no existe.");
+
+        var usuario = new Usuario
+        {
+            Nombre = dto.Nombre,
+            Apellido = dto.Apellido,
+            Dni = dto.Dni,
+            Email = dto.Email,
+            Contraseña = dto.Contrasenia,
+            RolId = dto.RolId
+        };
+
         _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetUsuario), new { id = usuario.UsuarioId }, usuario);
+
+        return CreatedAtAction(nameof(GetUsuario), new { id = usuario.UsuarioId }, new UsuarioDto
+        {
+            UsuarioId = usuario.UsuarioId,
+            Nombre = usuario.Nombre,
+            Apellido = usuario.Apellido,
+            Dni = usuario.Dni,
+            Email = usuario.Email,
+            RolId = usuario.RolId,
+            RolNombre = (await _context.Roles.FindAsync(usuario.RolId))?.RolNombre ?? ""
+        });
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+    // [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateUsuario(int id, CreateUsuarioDto dto)
     {
-        if (id != usuario.UsuarioId) return BadRequest();
-        _context.Entry(usuario).State = EntityState.Modified;
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Usuarios.Any(e => e.UsuarioId == id)) return NotFound();
-            else throw;
-        }
+        var usuario = await _context.Usuarios.FindAsync(id);
+        if (usuario == null)
+            return NotFound();
+
+        var rolExiste = await _context.Roles.AnyAsync(r => r.RolId == dto.RolId);
+        if (!rolExiste)
+            return BadRequest("El rol especificado no existe.");
+
+        usuario.Nombre = dto.Nombre;
+        usuario.Apellido = dto.Apellido;
+        usuario.Dni = dto.Dni;
+        usuario.Email = dto.Email;
+        usuario.Contraseña = dto.Contrasenia;
+        usuario.RolId = dto.RolId;
+
+        await _context.SaveChangesAsync();
+
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteUsuario(int id)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
-        if (usuario == null) return NotFound();
+        if (usuario == null)
+            return NotFound();
+
         _context.Usuarios.Remove(usuario);
         await _context.SaveChangesAsync();
-        return Ok(usuario);
+
+        return NoContent();
     }
 }

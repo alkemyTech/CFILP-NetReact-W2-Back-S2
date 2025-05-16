@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// app.UseAuthorization(); --Fausto: Comentando para pruebas, causa error 500 al intentar hacer POST
 
 app.MapControllers();
 
