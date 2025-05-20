@@ -4,6 +4,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ApiDigitalArs.Models;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -17,13 +18,13 @@ public class TokenController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult GenerateToken(string username, string password)
+    public IActionResult GenerateToken([FromBody] LoginRequest login)
     {
-        if (username == "admin" && password == "123456")
+        if (login.Username == "admin" && login.Password == "123456")
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Name, login.Username),
                 new Claim(ClaimTypes.Role, "Admin")
             };
 
@@ -47,3 +48,4 @@ public class TokenController : ControllerBase
         return Unauthorized();
     }
 }
+

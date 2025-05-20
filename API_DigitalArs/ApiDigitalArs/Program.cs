@@ -1,18 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Security.Claims;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;  // Agregado para List<string>
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// 1. Agregar servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+// 2. Swagger con soporte para JWT Bearer
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -23,10 +21,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"Encabezado de autorización JWT usando el esquema Bearer. 
-
-Introduce 'Bearer' [espacio] y luego tu token en el campo de entrada a continuación.
-
+        Description = @"JWT Authorization usando Bearer.  
 Ejemplo: 'Bearer 12345abcdef'",
         Name = "Authorization",
         In = ParameterLocation.Header,
@@ -53,11 +48,11 @@ Ejemplo: 'Bearer 12345abcdef'",
     });
 });
 
-// Conexión a base de datos
+// 3. Configurar conexión a base de datos SQLite
 builder.Services.AddDbContext<ApiDigitalDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ApiDigitalArsDb")));
 
-// Configuración de JWT
+// 4. Configurar autenticación JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -69,30 +64,50 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
-// Agrega políticas de autorización
+// 5. Agregar política de autorización para Admin
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
 
+// 6. CORS para frontend en React
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-// Middleware
+// 7. Usar CORS
+app.UseCors("AllowReactApp");
+
+// 8. Swagger solo en desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// 9. Redireccionamiento a HTTPS
 app.UseHttpsRedirection();
 
-app.UseAuthentication();  // JWT
+// 10. Autenticación y Autorización
+app.UseAuthentication();
 app.UseAuthorization();
 
+// 11. Mapear controladores
 app.MapControllers();
 
+// 12. Ejecutar la app
 app.Run();
+
