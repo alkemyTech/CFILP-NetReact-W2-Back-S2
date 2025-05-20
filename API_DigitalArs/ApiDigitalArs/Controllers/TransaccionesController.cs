@@ -62,18 +62,56 @@ public class TransaccionesController : ControllerBase
     }
 
     [HttpPost]
-    // [Authorize]   --Fausto: Comentando para pruebas
-    public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransaccionDto dto)
+    [Authorize(Roles = "Admin")] 
+public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransaccionDto dto)
     {
         try
         {
-            // Validar que las cuentas existan
-            var cuentaOrigenExiste = dto.CuentaOrigenId == null || await _context.Cuentas.AnyAsync(c => c.CuentaId == dto.CuentaOrigenId);
-            var cuentaDestinoExiste = dto.CuentaDestinoId == null || await _context.Cuentas.AnyAsync(c => c.CuentaId == dto.CuentaDestinoId);
+            // Obtener cuentas según IDs
+            Cuenta? cuentaOrigen = null;
+            Cuenta? cuentaDestino = null;
 
-            if (!cuentaOrigenExiste || !cuentaDestinoExiste)
+            if (dto.CuentaOrigenId.HasValue)
             {
-                return BadRequest("Cuenta origen o destino no existe.");
+                cuentaOrigen = await _context.Cuentas.FirstOrDefaultAsync(c => c.CuentaId == dto.CuentaOrigenId.Value);
+                if (cuentaOrigen == null)
+                    return BadRequest("Cuenta origen no existe.");
+            }
+
+            if (dto.CuentaDestinoId.HasValue)
+            {
+                cuentaDestino = await _context.Cuentas.FirstOrDefaultAsync(c => c.CuentaId == dto.CuentaDestinoId.Value);
+                if (cuentaDestino == null)
+                    return BadRequest("Cuenta destino no existe.");
+            }
+
+            switch (dto.TipoTransaccion.ToLower())
+            {
+                case "deposito":
+                    if (cuentaDestino == null)
+                        return BadRequest("Cuenta destino requerida para depósito.");
+                    cuentaDestino.Saldo += dto.Monto;
+                    break;
+
+                case "retiro":
+                    if (cuentaOrigen == null)
+                        return BadRequest("Cuenta origen requerida para retiro.");
+                    if (cuentaOrigen.Saldo < dto.Monto)
+                        return BadRequest("Saldo insuficiente en cuenta origen.");
+                    cuentaOrigen.Saldo -= dto.Monto;
+                    break;
+
+                case "transferencia":
+                    if (cuentaOrigen == null || cuentaDestino == null)
+                        return BadRequest("Cuentas origen y destino requeridas para transferencia.");
+                    if (cuentaOrigen.Saldo < dto.Monto)
+                        return BadRequest("Saldo insuficiente en cuenta origen.");
+                    cuentaOrigen.Saldo -= dto.Monto;
+                    cuentaDestino.Saldo += dto.Monto;
+                    break;
+
+                default:
+                    return BadRequest("Tipo de transacción no válido. Debe ser 'deposito', 'retiro' o 'transferencia'.");
             }
 
             var transaccion = new Transaccion
@@ -90,7 +128,6 @@ public class TransaccionesController : ControllerBase
             _context.Transacciones.Add(transaccion);
             await _context.SaveChangesAsync();
 
-            // Convertimos a DTO para retornar
             var resultDto = new TransaccionDto
             {
                 TransaccionId = transaccion.TransaccionId,
@@ -107,12 +144,12 @@ public class TransaccionesController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Manejo de errores
             return StatusCode(500, $"Error interno del servidor: {ex.Message}");
         }
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")] ----Fausto: Comentando para pruebas
     public async Task<IActionResult> TransaccionUpdate(int id, UpdateTransaccionDto dto)
     {
@@ -147,6 +184,7 @@ public class TransaccionesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")] --Fausto: Comentando para pruebas
     public async Task<IActionResult> DeleteTransaccion(int id)
     {

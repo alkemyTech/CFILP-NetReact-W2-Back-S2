@@ -56,7 +56,7 @@ public class CuentasController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CuentaDto>> CreateCuenta(CreateCuentaDto dto)
     {
-       var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.UsuarioId == dto.UsuarioId);
+        var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.UsuarioId == dto.UsuarioId);
         if (!usuarioExiste)
             return BadRequest("El usuario especificado no existe.");
 
@@ -82,6 +82,7 @@ public class CuentasController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCuenta(int id, CreateCuentaDto dto)
     {
@@ -103,6 +104,7 @@ public class CuentasController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCuenta(int id)
     {

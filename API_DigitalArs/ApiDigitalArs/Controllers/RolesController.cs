@@ -47,6 +47,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<RolDto>> CreateRol(CreateRolDto dto)
     {
@@ -66,10 +67,11 @@ public class RolesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateRol(int id, CreateRolDto dto)
     {
-         var rol = await _context.Roles.FindAsync(id);
+        var rol = await _context.Roles.FindAsync(id);
         if (rol == null) return NotFound();
 
         rol.RolNombre = dto.RolNombre;
@@ -79,6 +81,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteRol(int id)
     {

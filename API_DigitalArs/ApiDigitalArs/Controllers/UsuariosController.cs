@@ -59,6 +59,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")] 
     public async Task<ActionResult<UsuarioDto>> CreateUsuario(CreateUsuarioDto dto)
     {
         // Validar que el Rol exista
@@ -92,6 +93,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateUsuario(int id, CreateUsuarioDto dto)
     {
@@ -116,6 +118,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")] 
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteUsuario(int id)
     {
