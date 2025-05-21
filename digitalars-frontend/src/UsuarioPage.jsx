@@ -5,6 +5,7 @@ import './UsuarioPage.css';
 const UsuarioPage = () => {
   const navigate = useNavigate();
 
+  const handleTransferencia = () => {navigate('/transferencia');}
   const handleDepositar = () => alert('Funcionalidad de depósito próximamente');
   const handleRetirar = () => alert('Funcionalidad de retiro próximamente');
   const handleLogout = () => navigate('/login');
@@ -15,7 +16,7 @@ const UsuarioPage = () => {
         <img src="/DigitalArs_02.png" alt="Logo DigitalArs" className="logo2" />
         <div className="user-icon">👤</div>
         <nav className="menu">
-          <button>Transferencia</button>
+          <button onClick={handleTransferencia}>Transferencia</button>
           <button onClick={handleDepositar}>Depositar</button>
           <button onClick={handleRetirar}>Retirar</button>
         </nav>

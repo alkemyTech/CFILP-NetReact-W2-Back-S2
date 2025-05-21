@@ -1,0 +1,57 @@
+.transfer-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f7fa;
+  height: 100vh;
+}
+
+.transfer-page h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.transfer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.transfer-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.transfer-form button {
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.transfer-form button:first-of-type {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.transfer-form button:first-of-type:hover {
+  background-color: #357ac8;
+}
+
+.volver-btn {
+  background-color: #ddd;
+  color: #333;
+}
+
+.volver-btn:hover {
+  background-color: #bbb;
+}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login';
 import UsuarioPage from './UsuarioPage';
 import AdminPage from './AdminPage';
+import UsuarioTransferencia from './UsuarioTransferencia';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/usuario" element={<UsuarioPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/transferencia" element={<UsuarioTransferencia />} />
       </Routes>
     </BrowserRouter>
   );
