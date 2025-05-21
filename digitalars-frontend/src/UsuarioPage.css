@@ -32,6 +32,12 @@ html, body {
   margin-bottom: 40px;
   user-select: none;
 }
+.logo2 {
+  width: 200px;  
+  height: auto;
+  margin-bottom: 20px;
+  user-select: none;
+}
 
 /* Icono usuario */
 .user-icon {

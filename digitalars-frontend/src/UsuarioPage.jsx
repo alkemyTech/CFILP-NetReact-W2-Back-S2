@@ -12,7 +12,7 @@ const UsuarioPage = () => {
   return (
     <div className="page-container">
       <aside className="sidebar">
-        <div className="logo">DigitalArs</div>
+        <img src="/DigitalArs_02.png" alt="Logo DigitalArs" className="logo2" />
         <div className="user-icon">👤</div>
         <nav className="menu">
           <button>Transferencia</button>
