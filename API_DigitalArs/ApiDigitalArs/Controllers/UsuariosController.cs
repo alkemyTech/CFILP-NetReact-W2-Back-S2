@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 [ApiController]
@@ -32,12 +33,13 @@ public class UsuariosController : ControllerBase
             })
             .ToListAsync();
 
-        return Ok(usuarios);    }
+        return Ok(usuarios);
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<UsuarioDto>> GetUsuario(int id)
     {
-         var usuario = await _context.Usuarios
+        var usuario = await _context.Usuarios
             .Include(u => u.Rol)
             .Where(u => u.UsuarioId == id)
             .Select(u => new UsuarioDto
@@ -58,11 +60,35 @@ public class UsuariosController : ControllerBase
         return Ok(usuario);
     }
 
+    // Nuevo endpoint para buscar usuario por email
+    [HttpGet("email/{email}")]
+    public async Task<ActionResult<UsuarioDto>> GetUsuarioPorEmail(string email)
+    {
+        var usuario = await _context.Usuarios
+            .Include(u => u.Rol)
+            .Where(u => u.Email.ToLower() == email.ToLower())
+            .Select(u => new UsuarioDto
+            {
+                UsuarioId = u.UsuarioId,
+                Nombre = u.Nombre,
+                Apellido = u.Apellido,
+                Dni = u.Dni,
+                Email = u.Email,
+                RolId = u.RolId,
+                RolNombre = u.Rol.RolNombre
+            })
+            .FirstOrDefaultAsync();
+
+        if (usuario == null)
+            return NotFound();
+
+        return Ok(usuario);
+    }
+
     [HttpPost]
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UsuarioDto>> CreateUsuario(CreateUsuarioDto dto)
     {
-        // Validar que el Rol exista
         var rolExiste = await _context.Roles.AnyAsync(r => r.RolId == dto.RolId);
         if (!rolExiste)
             return BadRequest("El rol especificado no existe.");
@@ -93,8 +119,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateUsuario(int id, CreateUsuarioDto dto)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
@@ -118,8 +143,7 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteUsuario(int id)
     {
         var usuario = await _context.Usuarios.FindAsync(id);

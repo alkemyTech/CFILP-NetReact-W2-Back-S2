@@ -608,3 +608,4 @@ C:\Users\Usuario\Desktop\Bootcamp Alkemy\JobReadiness\CFILP-NetReact-W2-Back-S2\
 C:\Users\Usuario\Desktop\Bootcamp Alkemy\JobReadiness\CFILP-NetReact-W2-Back-S2\API_DigitalArs\Copia_DigitalArs\ApiDigitalArs\obj\Debug\net6.0\ApiDigitalArs.genruntimeconfig.cache
 C:\Users\Usuario\Desktop\Bootcamp Alkemy\JobReadiness\CFILP-NetReact-W2-Back-S2\API_DigitalArs\Copia_DigitalArs\ApiDigitalArs\obj\Debug\net6.0\ref\ApiDigitalArs.dll
 C:\Users\Usuario\Desktop\Bootcamp Alkemy\JobReadiness\CFILP-NetReact-W2-Back-S2\API_DigitalArs\ApiDigitalArs\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Squad2_DigitalArs\API_DigitalArs\ApiDigitalArs\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

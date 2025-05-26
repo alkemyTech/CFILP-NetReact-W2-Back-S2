@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,6 +17,7 @@ public class CuentasController : ControllerBase
         _context = context;
     }
 
+    // GET: api/Cuentas
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CuentaDto>>> GetCuentas()
     {
@@ -32,6 +35,7 @@ public class CuentasController : ControllerBase
         return Ok(cuentas);
     }
 
+    // GET: api/Cuentas/5
     [HttpGet("{id}")]
     public async Task<ActionResult<CuentaDto>> GetCuenta(int id)
     {
@@ -53,9 +57,25 @@ public class CuentasController : ControllerBase
         return Ok(cuenta);
     }
 
+    // GET: api/Cuentas/cuentaPorEmail/email@example.com
+    [HttpGet("cuentaPorEmail/{email}")]
+    public async Task<ActionResult<object>> GetCuentaPorEmail(string email)
+    {
+        var cuenta = await _context.Cuentas
+            .Include(c => c.Usuario)
+            .FirstOrDefaultAsync(c => c.Usuario.Email == email);
+
+        if (cuenta == null)
+            return NotFound(new { message = "No se encontró cuenta con ese email." });
+
+        return Ok(new { cuentaId = cuenta.CuentaId });
+    }
+
+    // POST: api/Cuentas
     [HttpPost]
     public async Task<ActionResult<CuentaDto>> CreateCuenta(CreateCuentaDto dto)
     {
+        // Validar que usuario exista
         var usuarioExiste = await _context.Usuarios.AnyAsync(u => u.UsuarioId == dto.UsuarioId);
         if (!usuarioExiste)
             return BadRequest("El usuario especificado no existe.");
@@ -81,9 +101,9 @@ public class CuentasController : ControllerBase
         });
     }
 
+    // PUT: api/Cuentas/5
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCuenta(int id, CreateCuentaDto dto)
     {
         var cuenta = await _context.Cuentas.FindAsync(id);
@@ -103,9 +123,9 @@ public class CuentasController : ControllerBase
         return NoContent();
     }
 
+    // DELETE: api/Cuentas/5
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCuenta(int id)
     {
         var cuenta = await _context.Cuentas.FindAsync(id);

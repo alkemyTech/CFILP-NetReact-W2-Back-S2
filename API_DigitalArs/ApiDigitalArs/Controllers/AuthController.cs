@@ -50,13 +50,17 @@ public class AuthController : ControllerBase
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
+        // Obtener la cuenta asociada al usuario
+        var cuenta = await _context.Cuentas.FirstOrDefaultAsync(c => c.UsuarioId == usuario.UsuarioId);
+
         return Ok(new
         {
             token = tokenHandler.WriteToken(token),
             nombre = usuario.Nombre,
             usuarioId = usuario.UsuarioId,
-            rol = usuario.Rol.RolNombre
+            rol = usuario.Rol.RolNombre,
+            cuentaId = cuenta?.CuentaId,
+            saldo = cuenta?.Saldo
         });
     }
 }
-

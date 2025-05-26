@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -39,19 +41,19 @@ public class TransaccionesController : ControllerBase
     public async Task<ActionResult<TransaccionDto>> GetTransaccion(int id)
     {
         var transaccion = await _context.Transacciones
-        .Where(t => t.TransaccionId == id)
-        .Select(t => new TransaccionDto
-        {
-            TransaccionId = t.TransaccionId,
-            Monto = t.Monto,
-            Fecha = t.Fecha,
-            Descripcion = t.Descripcion,
-            Estado = t.Estado,
-            TipoTransaccion = t.TipoTransaccion,
-            CuentaOrigenId = t.CuentaOrigenId,
-            CuentaDestinoId = t.CuentaDestinoId
-        })
-        .FirstOrDefaultAsync();
+            .Where(t => t.TransaccionId == id)
+            .Select(t => new TransaccionDto
+            {
+                TransaccionId = t.TransaccionId,
+                Monto = t.Monto,
+                Fecha = t.Fecha,
+                Descripcion = t.Descripcion,
+                Estado = t.Estado,
+                TipoTransaccion = t.TipoTransaccion,
+                CuentaOrigenId = t.CuentaOrigenId,
+                CuentaDestinoId = t.CuentaDestinoId
+            })
+            .FirstOrDefaultAsync();
 
         if (transaccion == null)
         {
@@ -62,12 +64,10 @@ public class TransaccionesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")] 
-public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransaccionDto dto)
+    public async Task<ActionResult<TransaccionDto>> TransaccionCreate(TransaccionCreateDTO dto)
     {
         try
         {
-            // Obtener cuentas según IDs
             Cuenta? cuentaOrigen = null;
             Cuenta? cuentaDestino = null;
 
@@ -78,7 +78,18 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
                     return BadRequest("Cuenta origen no existe.");
             }
 
-            if (dto.CuentaDestinoId.HasValue)
+            if (!string.IsNullOrEmpty(dto.EmailDestino))
+            {
+                var usuarioDestino = await _context.Usuarios
+                    .Include(u => u.Cuentas)
+                    .FirstOrDefaultAsync(u => u.Email == dto.EmailDestino);
+
+                if (usuarioDestino == null || usuarioDestino.Cuentas == null || !usuarioDestino.Cuentas.Any())
+                    return BadRequest("El destinatario con ese email no existe o no tiene una cuenta asociada.");
+
+                cuentaDestino = usuarioDestino.Cuentas.First();
+            }
+            else if (dto.CuentaDestinoId.HasValue)
             {
                 cuentaDestino = await _context.Cuentas.FirstOrDefaultAsync(c => c.CuentaId == dto.CuentaDestinoId.Value);
                 if (cuentaDestino == null)
@@ -119,10 +130,10 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
                 Monto = dto.Monto,
                 Fecha = DateTime.Now,
                 Descripcion = dto.Descripcion,
-                Estado = dto.Estado,
+                Estado = "Completado",
                 TipoTransaccion = dto.TipoTransaccion,
                 CuentaOrigenId = dto.CuentaOrigenId,
-                CuentaDestinoId = dto.CuentaDestinoId
+                CuentaDestinoId = cuentaDestino?.CuentaId
             };
 
             _context.Transacciones.Add(transaccion);
@@ -149,8 +160,7 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")] ----Fausto: Comentando para pruebas
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> TransaccionUpdate(int id, UpdateTransaccionDto dto)
     {
         var transaccion = await _context.Transacciones.FindAsync(id);
@@ -160,7 +170,6 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
             return NotFound();
         }
 
-        // Mapping manual
         transaccion.Monto = dto.Monto;
         transaccion.Descripcion = dto.Descripcion;
         transaccion.Estado = dto.Estado;
@@ -184,8 +193,7 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")] 
-    // [Authorize(Roles = "Admin")] --Fausto: Comentando para pruebas
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTransaccion(int id)
     {
         var transaccion = await _context.Transacciones.FindAsync(id);
@@ -199,5 +207,33 @@ public async Task<ActionResult<TransaccionDto>> TransaccionCreate(CreateTransacc
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("porCuenta/{cuentaId}")]
+    public async Task<IActionResult> GetTransaccionesPorCuenta(int cuentaId)
+    {
+        var transacciones = await _context.Transacciones
+            .Include(t => t.CuentaOrigen).ThenInclude(c => c.Usuario)
+            .Include(t => t.CuentaDestino).ThenInclude(c => c.Usuario)
+            .Where(t => t.CuentaOrigenId == cuentaId || t.CuentaDestinoId == cuentaId)
+            .OrderByDescending(t => t.Fecha)
+            .Select(t => new TransaccionNombreDTO
+            {
+                TransaccionId = t.TransaccionId,
+                Monto = t.Monto,
+                Fecha = t.Fecha,
+                Descripcion = t.Descripcion,
+                Estado = t.Estado,
+                TipoTransaccion = t.TipoTransaccion,
+                CuentaOrigenId = t.CuentaOrigenId,
+                CuentaDestinoId = t.CuentaDestinoId,
+                NombreOrigen = t.CuentaOrigen != null ? t.CuentaOrigen.Usuario.Nombre : null,
+                ApellidoOrigen = t.CuentaOrigen != null ? t.CuentaOrigen.Usuario.Apellido : null,
+                NombreDestino = t.CuentaDestino != null ? t.CuentaDestino.Usuario.Nombre : null,
+                ApellidoDestino = t.CuentaDestino != null ? t.CuentaDestino.Usuario.Apellido : null
+            })
+            .ToListAsync();
+
+        return Ok(transacciones);
     }
 }
