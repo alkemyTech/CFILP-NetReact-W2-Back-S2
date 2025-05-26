@@ -63,4 +63,55 @@ public class AuthController : ControllerBase
             saldo = cuenta?.Saldo
         });
     }
+
+    [HttpPost("registerUsuario")]
+    // [AllowAnonymous]
+    public async Task<IActionResult> RegisterUsuario(RegisterUsuarioDto dto)
+    {
+        var usuarioExistente = await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Email == dto.Email || u.Dni == dto.Dni);
+
+        if (usuarioExistente != null)
+        {
+            return BadRequest("Ya existe un usuario con ese email o DNI.");
+        }
+
+        var nuevoUsuario = new Usuario
+        {
+            Nombre = dto.Nombre,
+            Apellido = dto.Apellido,
+            Dni = dto.Dni,
+            Email = dto.Email,
+            Contraseña = dto.Contraseña,
+            RolId = 1
+        };
+
+        _context.Usuarios.Add(nuevoUsuario);
+        await _context.SaveChangesAsync();
+
+        Console.WriteLine("Usuario ID generado: " + nuevoUsuario.UsuarioId);
+
+        var cuenta = new Cuenta
+        {
+            UsuarioId = nuevoUsuario.UsuarioId,
+            Moneda = "Peso",
+            Saldo = 0,
+            FechaCreacion = DateTime.UtcNow
+        };
+
+        _context.Cuentas.Add(cuenta);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Cuenta creada correctamente.");
+            return Ok("Usuario y cuenta creados.");
+        }
+        catch (DbUpdateException ex)
+        {
+            Console.WriteLine("Error al crear cuenta: " + ex.InnerException?.Message ?? ex.Message);
+            return BadRequest("Error al crear la cuenta.");
+        }
+
+    }
 }

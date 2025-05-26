@@ -6,11 +6,13 @@ import TransferenciaPage from './components/TransferenciaPage.jsx';
 import AdminUsuarios from './components/AdminUsuarios.jsx';
 import AdminCuentas from './components/AdminCuentas.jsx';
 import AdminTransacciones from './components/AdminTransacciones.jsx';
+import Register from './components/Registro.jsx';
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/registro" element={<Register />} />
       <Route path="/" element={<Login />} />
       <Route path="/usuario" element={<UsuarioPage />} />
       <Route path="/transferencia" element={<TransferenciaPage />} />

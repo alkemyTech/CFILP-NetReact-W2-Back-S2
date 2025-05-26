@@ -89,7 +89,7 @@ const Login = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Ingresa
             </Button>
-            <Button type="button" variant="outlined" color="primary" fullWidth>
+            <Button type="button" variant="outlined" color="primary" fullWidth onClick={() => navigate('/registro')}>
               Regístrate
             </Button>
           </Box>
