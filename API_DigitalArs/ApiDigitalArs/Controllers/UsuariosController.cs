@@ -119,8 +119,8 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> UpdateUsuario(int id, CreateUsuarioDto dto)
+    // [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateUsuario(int id, UsuarioActualizarDto dto)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario == null)
@@ -134,7 +134,6 @@ public class UsuariosController : ControllerBase
         usuario.Apellido = dto.Apellido;
         usuario.Dni = dto.Dni;
         usuario.Email = dto.Email;
-        usuario.Contraseña = dto.Contrasenia;
         usuario.RolId = dto.RolId;
 
         await _context.SaveChangesAsync();
