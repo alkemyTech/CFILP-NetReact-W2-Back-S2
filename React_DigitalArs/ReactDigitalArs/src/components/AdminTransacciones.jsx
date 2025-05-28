@@ -10,11 +10,14 @@ import {
   Button,
   TableContainer,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import axios from 'axios';
 
 const AdminTransacciones = () => {
   const [transacciones, setTransacciones] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const fetchTransacciones = async () => {
     try {
@@ -29,22 +32,17 @@ const AdminTransacciones = () => {
     fetchTransacciones();
   }, []);
 
-  const handleEliminar = async (id) => {
-    const confirmado = window.confirm('¿Estás seguro de eliminar esta transacción?');
-    if (!confirmado) return;
-
-    try {
-      await axios.delete(`https://localhost:7199/api/Transacciones/${id}`);
-      alert('Transacción eliminada correctamente');
-      fetchTransacciones();
-    } catch (error) {
-      console.error('Error al eliminar transacción:', error);
-      alert('Error al eliminar la transacción');
-    }
+  const handleEditar = (id) => {
+    setOpenSnackbar(true);
   };
 
-  const handleEditar = (id) => {
-    alert(`Editar transacción con ID: ${id}`);
+  const handleEliminar = async (id) => {
+    setOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setOpenSnackbar(false);
   };
 
   return (
@@ -104,6 +102,36 @@ const AdminTransacciones = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{
+          '&.MuiSnackbar-root': {
+            top: '16px !important',
+            left: '50% !important',
+            transform: 'translateX(-50%) !important',
+          },
+        }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{
+            width: '100%',
+            backgroundColor: '#d32f2f',
+            color: 'white',
+            '& .MuiAlert-icon': {
+              color: 'white',
+            },
+          }}
+          icon={null}
+        >
+          Funcionalidad aun no disponible
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

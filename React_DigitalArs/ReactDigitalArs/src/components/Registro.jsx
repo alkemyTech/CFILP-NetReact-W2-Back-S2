@@ -14,11 +14,24 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+
+  const validarEmail = (email) => {
+    // Valida que el email tenga formato nombre@dominio.ext
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
+
+    if (!validarEmail(email.trim())) {
+      setError('Por favor ingresá un email válido.');
+      return;
+    }
 
     try {
       await axios.post('https://localhost:7199/api/auth/registerUsuario', {
@@ -28,9 +41,8 @@ const Register = () => {
         email: email.trim(),
         contraseña: contraseña.trim(),
       });
-      
-      alert('Registro exitoso. Iniciá sesión.');
-      navigate('/login');
+
+      setSuccess('Registro exitoso. Iniciá sesión.');
     } catch (err) {
       console.error(err);
       setError('Error al registrarse. Verificá los datos.');
@@ -40,7 +52,7 @@ const Register = () => {
   return (
     <div className="login-page">
       <div className="login-left">
-        <img src="/logo_DigitalArs2.svg" alt="Logo DigitalArs" className="login-left-logo" />
+        <img src="/logo_DigitalArs.svg" alt="Logo DigitalArs" className="login-left-logo" />
         <br />
         <br />
         <Typography variant="body2" component="h1" color="white">
@@ -85,6 +97,8 @@ const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            error={email && !validarEmail(email)}
+            helperText={email && !validarEmail(email) ? 'Email no válido' : ''}
           />
           
           <TextField
@@ -93,14 +107,16 @@ const Register = () => {
             fullWidth
             margin="normal"
             value={dni}
-            onChange={(e) =>  {
-                const newValue = e.target.value;
-                if (/^\d*$/.test(newValue)) {
-                    setDni(newValue);}}}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (/^\d*$/.test(newValue)) {
+                setDni(newValue);
+              }
+            }}
             inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*',
-                maxLength: 9,
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+              maxLength: 9,
             }}
             required
           />
@@ -128,6 +144,12 @@ const Register = () => {
           {error && (
             <Typography variant="body2" color="error" sx={{ mt: 2, fontWeight: 'bold' }}>
               {error}
+            </Typography>
+          )}
+
+          {success && (
+            <Typography variant="body2" color="success.main" sx={{ mt: 2, fontWeight: 'bold' }}>
+              {success}
             </Typography>
           )}
         </Box>

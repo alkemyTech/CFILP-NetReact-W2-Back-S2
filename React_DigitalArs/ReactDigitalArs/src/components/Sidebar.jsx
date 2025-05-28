@@ -8,6 +8,7 @@ import {
   Avatar,
   Typography,
   Box,
+  Divider,
 } from '@mui/material';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -42,7 +43,7 @@ const Sidebar = ({ onLogout, onDepositar, onRetirar, onTransferencias, nombreUsu
       >
         <br></br>
         <img
-          src="/logo_DigitalArs2.svg"
+          src="/logo_DigitalArs.svg"
           alt="Logo de la empresa"
           style={{ width: '200px', marginBottom: '16px' }}
         />
@@ -52,7 +53,8 @@ const Sidebar = ({ onLogout, onDepositar, onRetirar, onTransferencias, nombreUsu
           {nombreUsuario || 'Cargando...'}
         </Typography>
       </Box>
-<br></br>
+<Divider sx={{ borderColor: 'rgba(255,255,255,0.3)', my: 1 }} />
+
       <List sx={{ px: 1 }}>
         <ListItem button onClick={onTransferencias}>
           <ListItemIcon sx={{ color: 'white' }}>
@@ -74,6 +76,7 @@ const Sidebar = ({ onLogout, onDepositar, onRetirar, onTransferencias, nombreUsu
           </ListItemIcon>
           <ListItemText primary="Retirar" />
         </ListItem>
+<Divider sx={{ borderColor: 'rgba(255,255,255,0.3)', my: 1 }} />
 
         <ListItem button onClick={onLogout}>
           <ListItemIcon sx={{ color: 'white' }}>

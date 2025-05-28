@@ -44,7 +44,7 @@ const AdminSidebar = ({
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 2 }}>
         <img
-          src="/logo_DigitalArs2.svg"
+          src="/logo_DigitalArs.svg"
           alt="Logo de la empresa"
           style={{ width: '200px', marginBottom: '16px' }}
         />

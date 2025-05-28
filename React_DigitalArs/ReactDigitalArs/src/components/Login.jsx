@@ -11,11 +11,13 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     try {
       const response = await axios.post('https://localhost:7199/api/auth/loginUsuario', {
@@ -32,24 +34,28 @@ const Login = () => {
       localStorage.setItem('cuentaId', cuentaId);
       localStorage.setItem('saldo', saldo);
 
-      alert('Login exitoso');
+      setSuccess('Inicio de sesión exitoso');
 
-      if (rol === 'Admin') {
-        navigate('/admin/usuarios');
-      } else {
-        navigate('/usuario');
-      }
+      // Espera breve para mostrar el mensaje antes de navegar
+      setTimeout(() => {
+        if (rol === 'Admin') {
+          navigate('/admin/usuarios');
+        } else {
+          navigate('/usuario');
+        }
+      }, 1000);
     } catch (err) {
-      setError('Credenciales incorrectas');
+      console.error(err);
+      setError('Error al iniciar sesión, revisa los datos');
     }
   };
 
   return (
     <div className="login-page">
       <div className="login-left">
-        <img src="/logo_DigitalArs2.svg" alt="Logo DigitalArs" className="login-left-logo" />
-        <br></br>
-        <br></br>
+        <img src="/logo_DigitalArs.svg" alt="Logo DigitalArs" className="login-left-logo" />
+        <br />
+        <br />
         <Typography variant="body2" component="h1" color="white">
           ¡Bienvenid@!
         </Typography>
@@ -85,6 +91,17 @@ const Login = () => {
             required
           />
 
+          {error && (
+            <Typography variant="body2" color="error" sx={{ mt: 2, fontWeight: 'bold' }}>
+              {error}
+            </Typography>
+          )}
+          {success && (
+            <Typography variant="body2" color="success.main" sx={{ mt: 2, fontWeight: 'bold' }}>
+              {success}
+            </Typography>
+          )}
+
           <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Ingresa
@@ -93,12 +110,6 @@ const Login = () => {
               Regístrate
             </Button>
           </Box>
-
-          {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 2, fontWeight: 'bold' }}>
-              {error}
-            </Typography>
-          )}
         </Box>
       </div>
     </div>

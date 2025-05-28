@@ -10,11 +10,19 @@ import {
   Button,
   TableContainer,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import axios from 'axios';
 
 const AdminCuentas = () => {
   const [cuentas, setCuentas] = useState([]);
+
+  // Estado para controlar Snackbar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  // Opcional: mensaje dinámico si quisieras cambiar texto, pero acá fijo
+  const mensajeSnackbar = "Funcionalidad aun no disponible";
 
   const fetchCuentas = async () => {
     try {
@@ -30,18 +38,20 @@ const AdminCuentas = () => {
   }, []);
 
   const handleEditar = (id) => {
-    alert(`Editar cuenta con ID: ${id}`);
+    // Mostrar snackbar en vez de alert
+    setOpenSnackbar(true);
   };
 
-  const handleEliminar = async (id) => {
-    if (!window.confirm('¿Estás seguro de eliminar esta cuenta?')) return;
+  const handleEliminar = (id) => {
+    // Mostrar snackbar en vez de confirm + delete
+    setOpenSnackbar(true);
+  };
 
-    try {
-      await axios.delete(`https://localhost:7199/api/Cuentas/${id}`);
-      fetchCuentas();
-    } catch (error) {
-      console.error('Error al eliminar cuenta:', error);
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+    setOpenSnackbar(false);
   };
 
   return (
@@ -95,6 +105,30 @@ const AdminCuentas = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="error"
+          sx={{
+            width: '100%',
+            backgroundColor: '#d32f2f', // rojo oscuro
+            color: 'white',
+            '& .MuiAlert-icon': {
+              color: 'white',
+            },
+          }}
+          icon={null} 
+        >
+          {mensajeSnackbar}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

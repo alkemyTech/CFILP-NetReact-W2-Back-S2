@@ -4,8 +4,7 @@ import {
   Box, 
   Typography, 
   TextField, 
-  Button, 
-  Avatar 
+  Button 
 } from '@mui/material';
 
 const TransferenciaPage = () => {
@@ -45,8 +44,14 @@ const TransferenciaPage = () => {
       });
 
       if (!responseTrans.ok) {
-        const errorData = await responseTrans.json();
-        throw new Error(errorData || "Error al realizar la transferencia.");
+        const errorText = await responseTrans.text(); // leer como texto plano
+        const errorMessage = errorText.toLowerCase();
+
+        if (errorMessage.includes("no registrado") || errorMessage.includes("no existe")) {
+          throw new Error("Ingresa un email válido");
+        }
+
+        throw new Error(errorText || "Error al realizar la transferencia.");
       }
 
       setMensaje("Transferencia realizada con éxito.");
@@ -59,16 +64,16 @@ const TransferenciaPage = () => {
 
   return (
     <Box
-  sx={{
-    height: '100vh',
-    background: 'linear-gradient(135deg, #6F04D9, #1B0273)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    px: 2,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  }}
->
+      sx={{
+        height: '100vh',
+        background: 'linear-gradient(135deg, #6F04D9, #1B0273)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        px: 2,
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
       <Box
         sx={{
           bgcolor: '#fff',
@@ -81,11 +86,11 @@ const TransferenciaPage = () => {
         }}
       >
         <Box
-  component="img"
-  src="/logo_DigitalArs2_Azul.svg"
-  alt="Logo DigitalArs"
-  sx={{ display: 'block', maxWidth: 280, height: 60, mb: 4, mx: 'auto' }}
-/>
+          component="img"
+          src="/logo_DigitalArs_Azul.svg"
+          alt="Logo DigitalArs"
+          sx={{ display: 'block', maxWidth: 280, height: 60, mb: 4, mx: 'auto' }}
+        />
 
         <Typography
           variant="h6"
