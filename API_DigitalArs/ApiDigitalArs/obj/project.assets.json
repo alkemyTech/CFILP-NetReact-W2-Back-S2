@@ -3027,31 +3027,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Usuario\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\hebeh\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+      "projectUniqueName": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
       "projectName": "ApiDigitalArs",
-      "projectPath": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
-      "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Usuario\\Desktop\\Bootcamp Alkemy\\JobReadiness\\CFILP-NetReact-W2-Back-S2\\API_DigitalArs\\ApiDigitalArs\\obj\\",
+      "projectPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\ApiDigitalArs.csproj",
+      "packagesPath": "C:\\Users\\hebeh\\.nuget\\packages\\",
+      "outputPath": "C:\\Squad2_DigitalArs\\API_DigitalArs\\ApiDigitalArs\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\hebeh\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
