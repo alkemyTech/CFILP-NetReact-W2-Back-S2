@@ -34,19 +34,24 @@ const Register = () => {
     }
 
     try {
-      await axios.post('https://localhost:7199/api/auth/registerUsuario', {
-        nombre: nombre.trim(),
-        apellido: apellido.trim(),
-        dni: dni.trim(),
-        email: email.trim(),
-        contraseña: contraseña.trim(),
-      });
+  await axios.post('https://localhost:7199/api/auth/registerUsuario', {
+    nombre: nombre.trim(),
+    apellido: apellido.trim(),
+    dni: dni.trim(),
+    email: email.trim(),
+    contraseña: contraseña.trim(),
+  });
 
-      setSuccess('Registro exitoso. Iniciá sesión.');
-    } catch (err) {
-      console.error(err);
-      setError('Error al registrarse. Verificá los datos.');
-    }
+  setSuccess('Registro exitoso. Iniciá sesión.');
+  
+  // Redirigir después de 1 segundo
+  setTimeout(() => {
+    navigate('/login');
+  }, 1000);
+} catch (err) {
+  console.error(err);
+  setError('Error al registrarse. Verificá los datos.');
+}
   };
 
   return (
